@@ -38,19 +38,6 @@ HTML/CSS/JavaScript：用於構建分類管理界面，讓管理員可以直觀�
 Bootstrap 或 Tailwind CSS：用於設計界面，提供響應式佈局和簡潔的使用者體驗。
 前端交互：使用 JavaScript 提供動態分類操作，允許管理員即時標記圖片與文章。
 
-資料庫結構設計
-#### 資料表：images_articles
-CREATE TABLE images_articles (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    item_type ENUM('image', 'article'), -- 區分是圖片還是文章
-    file_path VARCHAR(255),  -- 圖片或文章存儲的路徑
-    uploader_id BIGINT,      -- 發送者的 Discord ID
-    channel_id BIGINT,       -- 發送頻道的 ID
-    upload_time DATETIME,    -- 上傳時間
-    category VARCHAR(100),   -- 手動分類的類別
-    status ENUM('unclassified', 'classified'), -- 狀態（未分類/已分類）
-    tags JSON               -- 附加的標籤信息
-);
  
 分類邏輯與操作
 手動分類：在管理界面中，管理員可以根據文章的主題（例如：技術、娛樂等）或圖片中的人物（例如：成員A、成員B）進行分類。

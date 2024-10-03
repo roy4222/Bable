@@ -1,3 +1,50 @@
+<?php
+session_start(); // 啟用 Session
+
+// 資料庫連接設定
+$servername = "localhost";
+$db_username = "root"; // 資料庫使用者
+$db_password = "27003378"; // 替換為你的 MySQL 密碼
+$dbname = "dc_bot3"; // 替換為你的資料庫名稱
+
+// 建立連接
+$conn = mysqli_connect($servername, $db_username, $db_password, $dbname);
+
+// 檢查連接
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+$error_message = ""; // 初始化錯誤訊息
+
+// 檢查是否取得POST內容
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"] ?? "";
+    $password = $_POST["password"] ?? "";
+
+    // 查詢資料庫，檢查email與密碼
+    $sql = "SELECT * FROM users WHERE email = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    // 檢查是否有符合的email和密碼
+    if ($row = mysqli_fetch_assoc($result)) {
+        if ($row['password'] === $password) {
+            $_SESSION["username"] = $row['username'];
+            $_SESSION["role"] = $row['role'];
+            header("Location: message.php");
+            exit;
+        }
+    }
+    
+    // 帳號或密碼錯誤，設置錯誤訊息
+    $error_message = "帳號或密碼錯誤，請再試一次";
+}
+
+mysqli_close($conn); // 關閉連接
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,9 +57,29 @@
     <title>Bable</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .error-message {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
+    <?php if ($error_message): ?>
+    <div class="error-message" id="errorMessage"><?= htmlspecialchars($error_message) ?></div>
+    <?php endif; ?>
 
     <!-- Header Section -->
     <header>
@@ -51,22 +118,22 @@
         <span class="icon-close"><ion-icon name="close-outline"></ion-icon></span>
         <div class="form-box login">
             <h2>帳號登入</h2>
-            <form action="#">
+            <form action="index.php" method="post">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="email" required>
+                    <input type="email" name="email" required>
                     <label>Email信箱</label>
                 </div>
                 <div class="input-box">
                     <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
+                    <input type="password" name="password" required>
                     <label>密碼</label>
                 </div>
                 <div class="remember-forgot">
                     <label><input type="checkbox">記住我</label>
                     <a href="#">忘記密碼?</a>
                 </div>
-                <button type="submit" class="btnnn">登入</button>
+                <button type="submit" class="btnnn" id="login-button">登入</button>
                 <div class="login-register">
                     <p>還沒有帳號?<a href="#" class="register-link">註冊</a></p>
                 </div>
@@ -94,7 +161,7 @@
                 <div class="remember-forgot">
                     <label><input type="checkbox">我已閱讀使用者協議和規範</label>
                 </div>
-                <button type="submit" class="btnnn">註冊</button>
+                <button type="submit" class="btnnn" id="register-button">註冊</button>
                 <div class="login-register">
                     <p>已經有帳號了?<a href="#" class="login-link">登入</a></p>
                 </div>
@@ -315,6 +382,18 @@
         carousel.addEventListener('mouseenter', stopAutoPlay);
         carousel.addEventListener('mouseleave', startAutoPlay);
     });
+    </script>
+    <script>
+    // 在頁面加載完成後顯示錯誤訊息
+    window.onload = function() {
+        var errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.style.display = 'block';
+            setTimeout(function() {
+                errorMessage.style.display = 'none';
+            }, 5000); // 5秒後隱藏錯誤訊息
+        }
+    }
     </script>
 </body>
 
