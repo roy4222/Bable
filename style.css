@@ -115,7 +115,7 @@ header.scrolled {
     text-align: center;
 }
 
-/* 調整按鈕��樣式 */
+/* 調整按鈕樣式 */
 .welcome-container .look_more {
     display: flex;
     align-items: center; /* 圖片和文字垂直對齊 */
@@ -422,72 +422,10 @@ header.scrolled {
 
 
 
-/* 下拉菜單樣式 */
-.navigation .dropdown {
-    position: static;
-}
 
-.navigation .dropdown-content {
-    display: block;
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    left: 50%; /* 居中定位 */
-    transform: translateX(-50%); /* 水平居中 */
-    width: auto;
-    min-width: 200px;
-    background-color: rgb(36, 46, 54);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    z-index: 1000;
-    padding: 10px 0;
-    transition: visibility 0s linear 0.3s, opacity 0.3s linear;
-}
 
-.navigation .dropdown:hover .dropdown-content {
-    visibility: visible;
-    opacity: 1;
-    transition-delay: 0s;
-}
 
-.dropdown-inner {
-    display: flex;
-    flex-direction: column; /* 改為縱向排列 */
-    padding: 0 10px;
-}
 
-.dropdown-column {
-    padding: 10px 0; /* 調整上下間距 */
-}
-
-.dropdown-column h3 {
-    color: #ffdd57;
-    font-size: 1.1em;
-    margin-bottom: 8px;
-}
-
-.dropdown-column a {
-    display: block;
-    color: #ffffffe0;
-    padding: 5px 0;
-    font-size: 0.9em;
-    transition: color 0.3s;
-}
-
-.dropdown-column a:hover {
-    color: #ffdd57;
-}
-
-/* 調整導航欄樣式以適應下拉菜單 */
-.navigation .dropdown > a::after {
-    content: '\25BC';
-    margin-left: 5px;
-    font-size: 0.7em;
-    vertical-align: middle;
-}
-
-.navigation .dropdown:hover > a::after {
-    content: '\25B2';
-}
 
 /* Welcome Animation Styles */
 .welcome-container {
@@ -804,4 +742,78 @@ header.scrolled {
         display: inline-block;
         margin: 5px 10px;
     }
+}
+
+/* 下拉菜单容器样式 */
+.dropdownb {
+    position: relative;
+    display: inline-block;
+    z-index: 99;
+}
+
+/* 下拉内容的默认样式 */
+.dropdownb-content {
+    display: none;
+    position: absolute;
+    background-color: rgb(36, 46, 54);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    z-index: 1;
+    top: 110%;
+    right: -150%;
+    transform: translateX(-50%);
+}
+
+/* 鼠标悬停时的样式 */
+.dropdownb:hover .dropdownb-content {
+    display: block;
+}
+
+.dropdownb-content a {
+    color: #ffffffe0;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 1em;
+    white-space: nowrap;
+}
+
+.dropdownb-content a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 用户下拉菜单样式 */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: rgba(86, 86, 86, 0.841);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    z-index: 1;
+    top: 100%;
+    right: 0;
+}
+
+.user-dropdown:hover .user-dropdown-content {
+    display: block;
+}
+
+.user-dropdown-content a {
+    color: #ffffffe0;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 1em;
+    white-space: nowrap;
+}
+
+.user-dropdown-content a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }

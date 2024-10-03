@@ -35,13 +35,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         if ($row['password'] === $password) {
             $_SESSION["username"] = $row['username'];
             $_SESSION["role"] = $row['role'];
-            header("Location: index.php");
-            exit;
+            $success_message = "歡迎回來，" . $row['username']; // 新增這行
+            // 移除 header 重定向，讓消息能夠顯示
+            // header("Location: index.php");
+            // exit;
         }
     }
     
     // 帳號或密碼錯誤，設置錯誤訊息
-    $error_message = "帳號或密碼錯誤，請再試一次";
+    if (empty($success_message)) { // 新增這個條件判斷
+        $error_message = "帳號或密碼錯誤，請再試一次";
+    }
 }
 
 // 處理註冊
@@ -73,6 +77,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     }
 }
 
+// 檢查是否有登出消息
+if (isset($_SESSION['logout_message'])) {
+    $success_message = $_SESSION['logout_message'];
+    unset($_SESSION['logout_message']);
+}
+
 mysqli_close($conn); // 關閉連接
 ?>
 <!DOCTYPE html>
@@ -92,10 +102,11 @@ mysqli_close($conn); // 關閉連接
             background-color: #f8d7da;
             border: 1px solid #f5c6cb;
             color: #721c24;
-            padding: 10px;
+            padding: 20px;
             margin-bottom: 15px;
-            border-radius: 4px;
+            border-radius: 10px;
             text-align: center;
+            min-width: 200px;
             position: fixed;
             top: 0;
             left: 50%;
@@ -107,10 +118,11 @@ mysqli_close($conn); // 關閉連接
             background-color: #d4edda;
             border: 1px solid #c3e6cb;
             color: #155724;
-            padding: 10px;
+            padding: 20px;
             margin-bottom: 15px;
-            border-radius: 4px;
+            border-radius: 10px;
             text-align: center;
+            min-width: 200px;
             position: fixed;
             top: 0;
             left: 50%;
@@ -125,9 +137,9 @@ mysqli_close($conn); // 關閉連接
         .user-dropdown-content {
             display: none;
             position: absolute;
-            right: 0;
-            background-color: #f9f9f9;
-            min-width: 160px;
+            left: 10%;
+            background-color: rgb(36, 46, 54);
+            min-width: 120px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
         }
@@ -135,13 +147,24 @@ mysqli_close($conn); // 關閉連接
             display: block;
         }
         .user-dropdown-content a {
-            color: black;
+            color: white;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
+            right:-20%;
+            transform: translateX(-50%);
         }
-        .user-dropdown-content a:hover {
-            background-color: #f1f1f1;
+        
+        .user-dropdown .dropbtn {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+        }
+
+        .user-dropdown .dropbtn ion-icon {
+            margin-right: 5px;
+            font-size: 1.2em;
         }
     </style>
 </head>
@@ -167,31 +190,24 @@ mysqli_close($conn); // 關閉連接
         <nav class="navigation">
             <a href="#"><strong><ion-icon name="home-outline"></ion-icon>首頁</strong></a>
             <a href="#"><strong><ion-icon name="information-circle-outline"></ion-icon>關於</strong></a>
-            <div class="dropdown">
-                <a href="#" class="dropbtn"><strong><ion-icon name="compass-outline"></ion-icon>頁面</strong></a>
-                <div class="dropdown-content">
-                    <div class="dropdown-inner">
-                        <div class="dropdown-column">
-                            
-                            <h3><a href="#">複製文查詢</a></h3>
-                        </div>
-                        <div class="dropdown-column">
-                           
-                            <h3><a href="#">圖片</a></h3>
-                        </div>
-                    </div>
+            <div class="dropdownb">
+                <a href="#"><strong><ion-icon name="compass-outline"></ion-icon>頁面</strong></a>
+                <div class="dropdownb-content">
+                    <a href="#">複製文</a>
+                    <a href="#">可愛捏</a>
+                    <a href="#">這我</a>
+                    <a href="#">三小啦</a>
                 </div>
             </div>
             <a href="#"><strong><ion-icon name="bulb-outline"></ion-icon>聯絡我們</strong></a>
             <?php if (isset($_SESSION["username"])): ?>
                 <div class="user-dropdown">
-                    <a href="#" class="dropbtn" style="color: white;">
-                        <strong>
-                            <ion-icon name="person-circle-outline"></ion-icon>
-                            <?= htmlspecialchars($_SESSION["username"]) ?>
-                        </strong>
+                    <a href="#" class="dropbtn">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <span><?= htmlspecialchars($_SESSION["username"]) ?></span>
                     </a>
                     <div class="user-dropdown-content">
+                        <a href="#">設定</a>
                         <a href="logout.php">登出</a>
                     </div>
                 </div>
