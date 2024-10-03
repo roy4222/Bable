@@ -1,0 +1,807 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Megrim&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+/*背景圖片*/
+body{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-color: rgb(36, 46, 54) !important;
+}
+/*功能列*/
+header{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    padding: 1.3rem 1%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    height: 100px;
+    transition: background-color 0.3s;
+    background-color: rgb(36, 46, 54); 
+    
+}
+
+header.scrolled {
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    padding: 1.3rem 1%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background-color: rgba(76, 76, 76, 0.576);
+    height: 100px;
+    backdrop-filter: blur(10px);
+}
+
+/* Define fadeInZoom without transform */
+@keyframes fadeInZoom {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+
+/* Content section styling */
+.content-section {
+    position: absolute;
+    top: 100%; /* 距离頂部的距离 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+    color: #0454a9; /* 文字颜色 */
+    font-size:24px; /* 文字大小 */
+    text-decoration: none;
+    font-weight: 500;
+    padding: 50px;
+    border-radius: 20px;
+    min-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.content-section h1 {
+    font-size: 2.5rem;
+    color: #ffdd57;
+    margin-bottom: 20px;
+}
+
+.content-section p {
+    font-size: 1rem;
+    color: #eeeeee;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+
+
+/* 首頁中間的按鈕 */
+
+/* 確保整個容器垂直和水平居中 */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 55%; /* 將這個值從50%增加到55%或更多 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* 調整按鈕��樣式 */
+.welcome-container .look_more {
+    display: flex;
+    align-items: center; /* 圖片和文字垂直對齊 */
+    justify-content: center; /* 讓內容在按鈕內水平居中 */
+    width: 200px;
+    height: 60px;
+    background: linear-gradient(135deg, #ffdd57, #f39c12);
+    border: none;
+    border-radius: 50px;
+    outline: none;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #333;
+    transition: all 0.4s ease;
+    margin-top: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+/* 圖片和文字的間距和大小 */
+.welcome-container .look_more img {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+/* 懸停效果 */
+.welcome-container .look_more:hover {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    animation: jumpButton 0.5s ease infinite alternate;
+}
+
+/* 點擊效果 */
+.welcome-container .look_more:active {
+    transform: scale(0.98) translateY(2px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+
+
+
+/* 導覽列 */
+.navigation {
+    position: relative;
+    display: flex;
+    align-items: center; /* 垂直置中所有導航項目 */
+    justify-content: space-between; /* 將導航鏈接均勻分 */
+}
+
+/* 導航鏈接 */
+.navigation a {
+    display: inline-flex; /* 確保圖標和文本在同一行 */
+    align-items: center; /* 垂直對齊圖標和文本 */
+    font-size: 1.3em;
+    color: #ffffffe0;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 30px;
+    position: relative; /* 用於下劃線懸停效果 */
+}
+
+/* 懸停時的下劃線效果 */
+.navigation a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px; /* 下劃線與文本間的距離 */
+    width: 100%;
+    height: 3px;
+    background: #ffffffe0;
+    border-radius: 5px;
+    transform: scaleX(0); /* 初始狀態：隱藏下劃線 */
+    transition: transform 0.3s ease-in-out; /* 平滑過渡效果 */
+}
+
+.navigation a:hover::after {
+    transform: scaleX(1); /* 懸停時展開下劃線 */
+}
+
+/* 圖標樣式 */
+.navigation a ion-icon {
+    margin-right: 8px; /* 圖標與文本間的間距 */
+    font-size: 1.5rem; /* 確保圖標大小與文本平衡 */
+    vertical-align: middle; /* 確保圖標與文本垂直對齊 */
+}
+
+/* 登入按鈕樣式 */
+.navigation .btnLogin-popup {
+    display: inline-flex; /* 確保按鈕文字水平對齊 */
+    justify-content: center;
+    align-items: center;
+    width: 130px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid #fff;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: #fff;
+    font-weight: 500;
+    margin-left: 30px;
+    transition: 0.3s ease-in-out; /* 懸停時的平滑過渡效果 */
+}
+
+/* 登入按鈕懸停效果 */
+.navigation .btnLogin-popup:hover {
+    background: #fff;
+    color: #000;
+}
+
+
+
+
+
+
+/*以下為註冊與登入頁面 請勿觸碰*/
+.wrapper{
+    position: relative;
+    width: 400px;
+    height: 440px;
+    background:rgba(122, 122, 122, 0.17); /*透明*/
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 20px;
+    backdrop-filter: blur(5000px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transform: scale(0) ; ;
+    transition: transform .5s ease, height .2s ease;
+    z-index: 9999;
+}
+
+.wrapper.active-popup{
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1); ;
+}
+
+.wrapper.active{
+    height: 520px;
+}
+
+.wrapper .form-box{
+    width: 100%;
+    padding: 40px;
+}
+
+.wrapper .form-box.login{
+    transition: transform .18s ease; 
+    transform: translateX(0);
+}
+
+.wrapper.active .form-box.login{
+   transition: none;
+   transform: translateX(-400px);
+}
+
+.wrapper .form-box.register{
+    position: absolute;
+    transition: none;
+    transform: translateX(400px);}
+
+
+
+.wrapper.active .form-box.register{
+    transition: transform .18s ease; 
+    transform: translateX(0);
+}
+
+.wrapper .icon-close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 45px;
+    height: 45px;
+    background: rgb(255, 255, 255);
+    font-size: 2em;
+    color:rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom-left-radius:20px ;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.form-box h2{
+    font-size: 2em;
+    color:#fff;
+    text-align: center;
+}
+
+.input-box{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid rgb(255, 255, 255);
+    margin: 30px 0;
+}
+
+.input-box label{
+    position: absolute;
+    top:50%;
+    left:5px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: #ffffff;
+    font-weight: 500;
+    pointer-events: none;
+    transition:.5s;
+}
+
+.input-box input:focus~label,
+.input-box input:valid~label{
+    top: -5px;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 600;
+    padding: 0 35px 0 5px;
+}
+
+.input-box .icon{
+    position: absolute;
+    right: 8px;
+    font-size: 1.2em;
+    color: #fff;
+    line-height: 57px;
+}
+
+.remember-forgot{
+    font-size: .9em;
+    color: #fff;
+    font-weight: 500;
+    margin: -15px 0 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.remember-forgot label input{
+    accent-color: #ffffff;
+    margin-right: 3px;
+}
+
+.remember-forgot a{
+    color:#fff;
+    text-decoration: none;
+}
+
+.remember-forgot a:hover{
+    text-decoration: underline;
+}
+/*帳號登入按鈕*/
+.btnnn{
+    width: 100%;
+    height: 45px;
+    background: #ffffff;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color:rgb(0, 0, 0);
+    font-weight: 500;
+   
+}
+
+.login-register{
+    font-size: .9em;
+    color: #fff;
+    text-align: center;
+    font-weight: 500;
+    margin: 25px 0 10px;
+}
+
+.login-register p a{
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-register p a:hover{
+    text-decoration: underline;
+}
+/*以上為註冊與登入頁面 請勿觸碰*/
+
+
+
+/* 下拉菜單樣式 */
+.navigation .dropdown {
+    position: static;
+}
+
+.navigation .dropdown-content {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    left: 50%; /* 居中定位 */
+    transform: translateX(-50%); /* 水平居中 */
+    width: auto;
+    min-width: 200px;
+    background-color: rgb(36, 46, 54);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 10px 0;
+    transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+}
+
+.navigation .dropdown:hover .dropdown-content {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.dropdown-inner {
+    display: flex;
+    flex-direction: column; /* 改為縱向排列 */
+    padding: 0 10px;
+}
+
+.dropdown-column {
+    padding: 10px 0; /* 調整上下間距 */
+}
+
+.dropdown-column h3 {
+    color: #ffdd57;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.dropdown-column a {
+    display: block;
+    color: #ffffffe0;
+    padding: 5px 0;
+    font-size: 0.9em;
+    transition: color 0.3s;
+}
+
+.dropdown-column a:hover {
+    color: #ffdd57;
+}
+
+/* 調整導航欄樣式以適應下拉菜單 */
+.navigation .dropdown > a::after {
+    content: '\25BC';
+    margin-left: 5px;
+    font-size: 0.7em;
+    vertical-align: middle;
+}
+
+.navigation .dropdown:hover > a::after {
+    content: '\25B2';
+}
+
+/* Welcome Animation Styles */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 55%; /* 將這個值從50%增加到55%或更多 */
+    left: 50%;
+    right: -50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.welcome-text, .welcome-content {
+    transition: transform 0.3s ease;
+}
+
+.welcome-text {
+    font-size: 7rem;
+    color: #ffdd57;
+    font-weight: bold;
+}
+
+.welcome-content {
+    font-size: 2rem;
+    color: white;
+    font-weight: bold;
+}
+
+.welcome-container:hover .welcome-text,
+.welcome-container:hover .welcome-content {
+    animation: jumpText 0.5s ease infinite alternate;
+}
+
+@keyframes jumpText {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+/* 調整按鈕的樣式 */
+.welcome-container .look_more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 60px;
+    background: linear-gradient(135deg, #ffdd57, #f39c12);
+    border: none;
+    border-radius: 50px;
+    outline: none;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #333;
+    transition: all 0.4s ease;
+    margin-top: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.welcome-container .look_more:hover {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    animation: jumpButton 0.5s ease infinite alternate;
+}
+
+@keyframes jumpButton {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        transform: translateY(-5px) scale(1.05);
+    }
+}
+
+/* 首頁複製文展示功能 */
+.custom-carousel-container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    background-color: rgb(36, 46, 54);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.custom-carousel {
+    display: flex;
+    gap: 15px;
+    animation: customScrollLeftToRight 20s linear infinite;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.carousel-inner img {
+    max-width: 100%;
+    height: auto;
+}
+
+.custom-carousel-item {
+    min-width: 300px;
+    background-color: #222;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.custom-carousel.scroll-left {
+    animation: scrollLeftToRight 30s linear infinite;
+}
+
+.custom-carousel.scroll-right {
+    animation: scrollRightToLeft 30s linear infinite;
+}
+
+@keyframes scrollLeftToRight {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes scrollRightToLeft {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+
+
+/* 首頁圖片瀏覽功能 */
+.unique-carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    overflow: hidden;
+    background-color: transparent;
+}
+
+.unique-carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.unique-carousel-item {
+    min-width: 25%;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+.unique-carousel-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.unique-prev-btn, .unique-next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    color: black;
+    font-size: 2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.unique-prev-btn {
+    left: 10px;
+}
+
+.unique-next-btn {
+    right: 10px;
+}
+
+.unique-prev-btn:hover, .unique-next-btn:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.site-footer {
+    background-color: rgb(36, 46, 54);
+    color: #fff;
+    padding: 40px 0;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+    margin: 0;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.footer-section ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: color 0.3s ease;
+    display: flex;  /* 新增 */
+    align-items: center;  /* 新增 */
+}
+
+.footer-section ul li a:hover {
+    color: #fff;
+}
+
+.footer-section ul li a ion-icon {
+    margin-right: 5px;  /* 新增 */
+    font-size: 1.2em;  /* 新增 */
+}
+
+.footer-bottom {
+    border-top: 1px solid #333;
+    margin-top: 20px;
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.footer-links a {
+    color: #aaa;
+    text-decoration: none;
+    margin-right: 20px;
+    font-size: 0.9em;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+.footer-copyright {
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+    }
+    
+    .footer-section {
+        margin-bottom: 30px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-links {
+        margin-bottom: 15px;
+    }
+    
+    .footer-links a {
+        display: inline-block;
+        margin: 5px 10px;
+    }
+}
