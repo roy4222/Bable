@@ -16,9 +16,10 @@ if (!$conn) {
 }
 
 $error_message = ""; // 初始化錯誤訊息
+$success_message = ""; // 初始化成功訊息
 
 // 檢查是否取得POST內容
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     $email = $_POST["email"] ?? "";
     $password = $_POST["password"] ?? "";
 
@@ -34,13 +35,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($row['password'] === $password) {
             $_SESSION["username"] = $row['username'];
             $_SESSION["role"] = $row['role'];
-            header("Location: message.php");
+            header("Location: index.php");
             exit;
         }
     }
     
     // 帳號或密碼錯誤，設置錯誤訊息
     $error_message = "帳號或密碼錯誤，請再試一次";
+}
+
+// 處理註冊
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
+    $username = $_POST["username"] ?? "";
+    $email = $_POST["email"] ?? "";
+    $password = $_POST["password"] ?? "";
+
+    // 檢查郵箱是否已存在
+    $check_sql = "SELECT * FROM users WHERE email = ?";
+    $check_stmt = mysqli_prepare($conn, $check_sql);
+    mysqli_stmt_bind_param($check_stmt, "s", $email);
+    mysqli_stmt_execute($check_stmt);
+    $check_result = mysqli_stmt_get_result($check_stmt);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        $error_message = "該郵箱已被註冊";
+    } else {
+        // 插入新用戶
+        $insert_sql = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'C')";
+        $insert_stmt = mysqli_prepare($conn, $insert_sql);
+        mysqli_stmt_bind_param($insert_stmt, "sss", $username, $email, $password);
+        
+        if (mysqli_stmt_execute($insert_stmt)) {
+            $success_message = "註冊成功，請登入";
+        } else {
+            $error_message = "註冊失敗，請稍後再試";
+        }
+    }
 }
 
 mysqli_close($conn); // 關閉連接
@@ -73,12 +103,56 @@ mysqli_close($conn); // 關閉連接
             z-index: 1000;
             display: none;
         }
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: none;
+        }
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .user-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .user-dropdown:hover .user-dropdown-content {
+            display: block;
+        }
+        .user-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .user-dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 
 <body>
     <?php if ($error_message): ?>
     <div class="error-message" id="errorMessage"><?= htmlspecialchars($error_message) ?></div>
+    <?php endif; ?>
+
+    <?php if ($success_message): ?>
+    <div class="success-message" id="successMessage"><?= htmlspecialchars($success_message) ?></div>
     <?php endif; ?>
 
     <!-- Header Section -->
@@ -109,7 +183,21 @@ mysqli_close($conn); // 關閉連接
                 </div>
             </div>
             <a href="#"><strong><ion-icon name="bulb-outline"></ion-icon>聯絡我們</strong></a>
-            <button class="btnLogin-popup"><strong>登入</strong></button>
+            <?php if (isset($_SESSION["username"])): ?>
+                <div class="user-dropdown">
+                    <a href="#" class="dropbtn" style="color: white;">
+                        <strong>
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                            <?= htmlspecialchars($_SESSION["username"]) ?>
+                        </strong>
+                    </a>
+                    <div class="user-dropdown-content">
+                        <a href="logout.php">登出</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <button class="btnLogin-popup"><strong>登入</strong></button>
+            <?php endif; ?>
         </nav>
     </header>
 
@@ -133,7 +221,7 @@ mysqli_close($conn); // 關閉連接
                     <label><input type="checkbox">記住我</label>
                     <a href="#">忘記密碼?</a>
                 </div>
-                <button type="submit" class="btnnn" id="login-button">登入</button>
+                <button type="submit" name="login" class="btnnn" id="login-button">登入</button>
                 <div class="login-register">
                     <p>還沒有帳號?<a href="#" class="register-link">註冊</a></p>
                 </div>
@@ -142,26 +230,26 @@ mysqli_close($conn); // 關閉連接
 
         <div class="form-box register">
             <h2>註冊新帳號</h2>
-            <form action="#">
+            <form action="index.php" method="post">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
-                    <input type="text" required>
+                    <input type="text" name="username" required>
                     <label>使用者名稱</label>
                 </div>
                 <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></ion-icon></span>
-                    <input type="email" required>
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="email" name="email" required>
                     <label>Email信箱</label>
                 </div>
                 <div class="input-box">
                     <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
+                    <input type="password" name="password" required>
                     <label>密碼</label>
                 </div>
                 <div class="remember-forgot">
-                    <label><input type="checkbox">我已閱讀使用者協議和規範</label>
+                    <label><input type="checkbox" required>我已閱讀使用者協議和規範</label>
                 </div>
-                <button type="submit" class="btnnn" id="register-button">註冊</button>
+                <button type="submit" name="register" class="btnnn" id="register-button">註冊</button>
                 <div class="login-register">
                     <p>已經有帳號了?<a href="#" class="login-link">登入</a></p>
                 </div>
@@ -387,11 +475,18 @@ mysqli_close($conn); // 關閉連接
     // 在頁面加載完成後顯示錯誤訊息
     window.onload = function() {
         var errorMessage = document.getElementById('errorMessage');
+        var successMessage = document.getElementById('successMessage');
         if (errorMessage) {
             errorMessage.style.display = 'block';
             setTimeout(function() {
                 errorMessage.style.display = 'none';
             }, 5000); // 5秒後隱藏錯誤訊息
+        }
+        if (successMessage) {
+            successMessage.style.display = 'block';
+            setTimeout(function() {
+                successMessage.style.display = 'none';
+            }, 5000); // 5秒後隱藏成功訊息
         }
     }
     </script>
