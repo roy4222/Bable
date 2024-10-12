@@ -19,7 +19,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 TARGET_CHANNEL_ID = 1213391839508570134  # 替換為你的頻道 ID
 
 # 定義圖片保存的路徑
-SAVE_DIRECTORY = "C:/xampp/htdocs/dc3/images"  # 替換為你的網站圖片資料夾
+SAVE_DIRECTORY = "C:/xampp/htdocs/dc/images"  # 替換為你的網站圖片資料夾
 
 # 如果保存圖片的文件夾不存在，創建它
 if not os.path.exists(SAVE_DIRECTORY):

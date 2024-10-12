@@ -151,7 +151,7 @@ $conn->close();
 
                 echo "<div class='col-md-4' data-aos='fade-up'>"; // 每個圖片使用 col-md-4
                 echo "<div class='card mb-4'>";
-                echo "<img src='/static/images/$imageName' class='card-img-top' alt='$imageName' data-index='$index'>"; // 圖片顯示
+                echo "<img src='images/$imageName' class='card-img-top' alt='$imageName' data-index='$index'>"; // 圖片顯示
                 echo "<div class='card-body'>";
                 echo "<h5 class='card-title'>$imageName</h5>";
                 echo "<p class='card-text'>";
@@ -219,7 +219,7 @@ $conn->close();
         function updateModalImage() {
             const modalImage = document.getElementById('modalImage');
             const modalLabel = document.getElementById('imageModalLabel');
-            modalImage.src = '/static/images/' + imageData[currentIndex].image_name;
+            modalImage.src = 'images/' + imageData[currentIndex].image_name;
             modalLabel.textContent = imageData[currentIndex].image_name;
         }
 
