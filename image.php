@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $servername = "localhost";
 $username = "root";
 $password = "27003378";
@@ -11,25 +13,47 @@ if ($conn->connect_error) {
     die("連接失敗: " . $conn->connect_error);
 }
 
-// 取得標籤篩選與編號搜尋的選項
-$filterTag = isset($_GET['tag']) ? $_GET['tag'] : '';
-$search = isset($_GET['search']) ? $_GET['search'] : '';
+// 設置每頁顯示的圖片數量
+$imagesPerPage = 51;
 
-// 根據標籤篩選或編號搜尋圖片
-$sql = "SELECT image_name, tags FROM images WHERE 1";
-if ($filterTag) {
-    $sql .= " AND FIND_IN_SET('$filterTag', tags)";
+// 添加刪除功能
+if (isset($_POST['delete']) && isset($_POST['image_name'])) {
+    $imageToDelete = $_POST['image_name'];
+    $deleteSQL = "DELETE FROM images WHERE image_name = ?";
+    $stmt = $conn->prepare($deleteSQL);
+    $stmt->bind_param("s", $imageToDelete);
+    $stmt->execute();
+    $stmt->close();
+    echo json_encode(['success' => true]);
+    exit();
 }
 
-if ($search) {
-    $sql .= " AND image_name LIKE '%$search%'"; // 編號搜尋
+// 獲取排序方式
+$sortBy = isset($_GET['sort']) ? $_GET['sort'] : 'random';
+
+// 獲取當前頁碼，如果沒有設置則默認為第1頁
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+// 獲取總圖片數
+$totalImages = $conn->query("SELECT COUNT(*) as total FROM images")->fetch_assoc()['total'];
+
+// 計算總頁數
+$totalPages = ceil($totalImages / $imagesPerPage);
+
+// 確保當前頁碼在有效範圍內
+$currentPage = max(1, min($currentPage, $totalPages));
+
+// 計算 OFFSET
+$offset = ($currentPage - 1) * $imagesPerPage;
+
+// 根據排序方式選擇SQL查詢
+if ($sortBy === 'time') {
+    $sql = "SELECT image_name, tags, message_time FROM images ORDER BY message_time DESC LIMIT $offset, $imagesPerPage";
+} else {
+    $sql = "SELECT image_name, tags, message_time FROM images ORDER BY RAND() LIMIT $imagesPerPage";
 }
 
-// 隨機排序圖片
-$sql .= " ORDER BY RAND()";
 $result = $conn->query($sql);
-
-// 抓取所有圖片名稱
 $imageData = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -37,18 +61,6 @@ if ($result->num_rows > 0) {
     }
 }
 
-// 取得所有唯一標籤
-$tagResult = $conn->query("SELECT DISTINCT tags FROM images");
-$allTags = [];
-while ($tagRow = $tagResult->fetch_assoc()) {
-    $tagsArray = explode(',', $tagRow['tags']);
-    foreach ($tagsArray as $tag) {
-        $tag = trim($tag);
-        if (!in_array($tag, $allTags)) {
-            $allTags[] = $tag;
-        }
-    }
-}
 $conn->close();
 ?>
 
@@ -100,7 +112,7 @@ $conn->close();
 
 
         .modal-footer {
-            justify-content: center;
+            justify-content: space-between;
         }
 
         .tag {
@@ -118,29 +130,32 @@ $conn->close();
             text-decoration: underline;
         }
 
+        .card-title {
+            display: none; /* 隱藏圖片編號 */
+        }
+
+        .card-body {
+            padding: 0rem; /* 減少卡片內容的內邊距 */
+        }
+
+        .card-text {
+            margin-bottom: 0; /* 移除標籤底部的邊距 */
+        }
+
     </style>
 </head>
 
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">圖片展示</h1>
+        
+        <!-- 添加總數據筆數顯示 -->
+        <p class="text-center mb-4" style="color: #ffdd57;">總共有 <?php echo $totalImages; ?> 筆資料</p>
 
-        <!-- 搜尋編號表單 -->
-        <form method="GET" action="" class="mb-4">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="搜尋圖片編號..." value="<?php echo htmlspecialchars($search); ?>">
-                <button class="btn btn-primary" type="submit">搜尋</button>
-            </div>
-        </form>
-
-        <!-- 標籤篩選區域 -->
-        <div class="mb-4">
-            <h5>篩選標籤：</h5>
-            <?php
-            foreach ($allTags as $tag) {
-                echo "<a href='?tag=" . urlencode($tag) . "' class='tag'>$tag</a>";
-            }
-            ?>
+        <!-- 排序選擇 -->
+        <div class="mb-4 text-center">
+            <a href="?sort=random" class="btn btn-primary <?php echo $sortBy === 'random' ? 'active' : ''; ?>">隨機排序</a>
+            <a href="?sort=time" class="btn btn-primary <?php echo $sortBy === 'time' ? 'active' : ''; ?>">按時間排序</a>
         </div>
 
         <div class="row" data-aos="fade-up" data-masonry='{ "percentPosition": true }'>
@@ -148,10 +163,11 @@ $conn->close();
             foreach ($imageData as $index => $data) {
                 $imageName = $data['image_name'];
                 $tags = $data['tags'];
+                $messageTime = $data['message_time'];
 
-                echo "<div class='col-md-4' data-aos='fade-up'>"; // 每個圖片使用 col-md-4
+                echo "<div class='col-md-4' data-aos='fade-up'>";
                 echo "<div class='card mb-4'>";
-                echo "<img src='images/$imageName' class='card-img-top' alt='$imageName' data-index='$index'>"; // 圖片顯示
+                echo "<img src='images/$imageName' class='card-img-top' alt='$imageName' data-index='$index'>";
                 echo "<div class='card-body'>";
                 echo "<h5 class='card-title'>$imageName</h5>";
                 echo "<p class='card-text'>";
@@ -169,9 +185,23 @@ $conn->close();
             }
             ?>
         </div>
+
+        <!-- 修改分頁導航部分 -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?php echo $i === $currentPage ? 'active' : ''; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>&sort=<?php echo $sortBy; ?>">
+                            <?php echo $i; ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+
     </div>
 
-    <!-- 模態框 -->
+    <!-- 修改模態框 -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -181,9 +211,11 @@ $conn->close();
                 </div>
                 <div class="modal-body text-center">
                     <img id="modalImage" src="" alt="選擇的圖片" class="modal-img">
+                    <p id="modalMessageTime" class="mt-2"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="prevImage">上一張</button>
+                    <button type="button" id="deleteButton" class="btn btn-danger">刪除</button>
                     <button type="button" class="btn btn-secondary" id="nextImage">下一張</button>
                 </div>
             </div>
@@ -219,8 +251,10 @@ $conn->close();
         function updateModalImage() {
             const modalImage = document.getElementById('modalImage');
             const modalLabel = document.getElementById('imageModalLabel');
+            const modalMessageTime = document.getElementById('modalMessageTime');
             modalImage.src = 'images/' + imageData[currentIndex].image_name;
             modalLabel.textContent = imageData[currentIndex].image_name;
+            modalMessageTime.textContent = '發布時間: ' + imageData[currentIndex].message_time;
         }
 
         // 下一張圖片
@@ -233,6 +267,37 @@ $conn->close();
         document.getElementById('prevImage').addEventListener('click', function () {
             currentIndex = (currentIndex - 1 + imageData.length) % imageData.length;
             updateModalImage();
+        });
+
+        // 刪除圖片
+        document.getElementById('deleteButton').addEventListener('click', function () {
+            const imageName = imageData[currentIndex].image_name;
+            if (confirm('確定要刪除這張圖片嗎？')) {
+                fetch('image.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'delete=1&image_name=' + encodeURIComponent(imageName)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 從頁面和數據中移除圖片
+                        const imageElement = document.querySelector(`img[alt="${imageName}"]`);
+                        if (imageElement) {
+                            imageElement.closest('.col-md-4').remove();
+                        }
+                        imageData.splice(currentIndex, 1);
+                        if (imageData.length === 0) {
+                            location.reload(); // 如果沒有更多圖片，刷新頁面
+                        } else {
+                            currentIndex = currentIndex % imageData.length;
+                            updateModalImage();
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
