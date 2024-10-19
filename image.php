@@ -70,8 +70,9 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>相片瀏覽器</title>
+    <title>可愛捏</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu6w1L1n_jpEO94b80gNhWHTvkpCtCHvui2Q&s">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
     <link rel="stylesheet" href="style.css">
     <style>
@@ -187,7 +188,9 @@ $conn->close();
     </header>
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4">圖片展示</h1>
+        <h1><strong>圖片展示</strong></h1>
+        <h1 class="text-center mb-4 animate__animated animate__fadeInDown" style="color: #ffdd57;"><strong>圖片展示</strong></h1>
+
         
         <!-- 添加總數據筆數顯示 -->
         <p class="text-center mb-4" style="color: #ffdd57;">總共有 <?php echo $totalImages; ?> 筆資料</p>
