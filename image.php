@@ -226,6 +226,10 @@ $conn->close();
             ?>
         </div>
 
+        
+
+
+
         <!-- 修改分頁導航部分 -->
         <nav aria-label="Page navigation" class="mt-4">
             <ul class="pagination justify-content-center">
@@ -239,7 +243,62 @@ $conn->close();
             </ul>
         </nav>
 
+        <br/><br/><br/>
+
+        <!-- 在這裡添加頁尾 -->
+        <footer class="site-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bable</h3>
+                    <ul>
+                        <li><a href="#">概述</a></li>
+                        <li><a href="#">索引</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3><strong>頁面</strong></h3>
+                    <ul>
+                        <li><a href="#">複製文大廳</a></li>
+                        <li><a href="#">可愛捏</a></li>
+                        <li><a href="#">適合企業</a></li>
+                        <li><a href="#">ChatGPT登入 ↗</a></li>
+                        <li><a href="#">下載</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3><strong>關注我們</strong></h3>
+                    <ul>
+                        <li><a href="#"><ion-icon name="logo-discord"></ion-icon>Discord↗</a></li>
+                        <li><a href="#"><ion-icon name="logo-instagram"></ion-icon></ion-icon>Instagram↗</a></li>
+                        <li><a href="#"><ion-icon name="logo-twitter"></ion-icon>Twitter↗</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3><strong>公司</strong></h3>
+                    <ul>
+                        <li><a href="#">關於我們</a></li>
+                        <li><a href="#">新聞</a></li>
+                        <li><a href="#">安全性</a></li>
+                        <li><a href="#">職位機會</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="#">條款與政策</a>
+                    <a href="#">隱私政策</a>
+                    <a href="#">品牌指南</a>
+                </div>
+                <div class="footer-copyright">
+                    Bable © 2024
+                </div>
+            </div>
+        </footer>
+    </section>
+    </main>
+
     </div>
+    
 
     <!-- 修改模態框 -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
