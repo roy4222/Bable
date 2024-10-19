@@ -73,6 +73,7 @@ $conn->close();
     <title>相片瀏覽器</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <link rel="stylesheet" href="style.css">
     <style>
 
         body {
@@ -146,6 +147,45 @@ $conn->close();
 </head>
 
 <body>
+    <!-- Header Section -->
+    <header>
+        <h2 class="logo">
+            <a href="#" style="text-decoration: none; color: #ffffffe0;">
+                <img src="logo.webp" width="70" style="border-radius: 200px;">
+                <strong>Bable</strong>
+            </a>
+        </h2>
+
+        <nav class="navigation">
+            <a href="index.php"><strong><ion-icon name="home-outline"></ion-icon>首頁</strong></a>
+            <a href="#"><strong><ion-icon name="information-circle-outline"></ion-icon>關於</strong></a>
+            <div class="dropdownb">
+                <a href="#"><strong><ion-icon name="compass-outline"></ion-icon>頁面</strong></a>
+                <div class="dropdownb-content">
+                    <a href="message.php">複製文</a>
+                    <a href="image.php">可愛捏</a>
+                    <a href="#">這我</a>
+                    <a href="#">三小啦</a>
+                </div>
+            </div>
+            <a href="#"><strong><ion-icon name="bulb-outline"></ion-icon>聯絡我們</strong></a>
+            <?php if (isset($_SESSION["username"])): ?>
+                <div class="user-dropdown">
+                    <a href="#" class="dropbtn">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <span><?= htmlspecialchars($_SESSION["username"]) ?></span>
+                    </a>
+                    <div class="user-dropdown-content">
+                        <a href="#">設定</a>
+                        <a href="logout.php">登出</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <button class="btnLogin-popup"><strong>登入</strong></button>
+            <?php endif; ?>
+        </nav>
+    </header>
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">圖片展示</h1>
         
@@ -222,11 +262,15 @@ $conn->close();
         </div>
     </div>
 
-    <!-- 引入 Bootstrap 和 AOS 效果 -->
+    
+
+    <!-- 引入 Bootstrap、AOS 效果和其他 JavaScript 文件 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-    <!-- 啟用 AOS 滾動動畫 -->
     <script>
         AOS.init({
             duration: 800,

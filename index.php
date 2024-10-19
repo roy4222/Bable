@@ -193,8 +193,8 @@ mysqli_close($conn); // 關閉連接
             <div class="dropdownb">
                 <a href="#"><strong><ion-icon name="compass-outline"></ion-icon>頁面</strong></a>
                 <div class="dropdownb-content">
-                    <a href="#">複製文</a>
-                    <a href="#">可愛捏</a>
+                    <a href="message.php">複製文</a>
+                    <a href="image.php">可愛捏</a>
                     <a href="#">這我</a>
                     <a href="#">三小啦</a>
                 </div>
