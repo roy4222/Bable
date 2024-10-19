@@ -17,7 +17,16 @@ $filterTag = isset($_GET['tag']) ? $_GET['tag'] : '';
 $startDate = isset($_GET['start_date']) ? $_GET['start_date'] : '';
 $endDate = isset($_GET['end_date']) ? $_GET['end_date'] : '';
 
-// 根據搜尋詞和標籤篩選查詢資料庫，並隨機排序結果
+// 設定每頁顯示的文章數量
+$itemsPerPage = 51;
+
+// 獲取當前頁碼
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+// 計算 OFFSET
+$offset = ($page - 1) * $itemsPerPage;
+
+// 根據搜尋詞和標籤篩選查詢資料庫
 $sql = "SELECT author, content, message_time, tags FROM messages WHERE 1";
 
 // 根據搜尋內容篩選
@@ -35,8 +44,15 @@ if ($startDate && $endDate) {
     $sql .= " AND message_time BETWEEN '$startDate 00:00:00' AND '$endDate 23:59:59'";
 }
 
-// 隨機排序結果
-$sql .= " ORDER BY RAND()";
+// 計算總記錄數
+$countResult = $conn->query($sql);
+$totalItems = $countResult->num_rows;
+
+// 計算總頁數
+$totalPages = ceil($totalItems / $itemsPerPage);
+
+// 添加 LIMIT 和 OFFSET 到 SQL 查詢
+$sql .= " ORDER BY message_time DESC LIMIT $itemsPerPage OFFSET $offset";
 
 $result = $conn->query($sql);
 
@@ -75,9 +91,13 @@ $conn->close();
     
     <!-- AOS (Animate On Scroll) for scroll animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"/>
+
+    <link rel="stylesheet" href="style.css">
     
     <!-- Masonry.js for dynamic layout -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+
+
 
     <!-- Custom CSS for styling -->
     <style>
@@ -155,54 +175,51 @@ $conn->close();
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">訊息展示</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">首頁</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#search-section">搜尋</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#messages">訊息</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">關於我們</a>
-                    </li>
-                </ul>
-                
-                <!-- Search Form in Navbar -->
-                <form class="d-flex" method="GET" action="">
-                    <input class="form-control me-2" type="search" name="search" placeholder="搜尋作者或內容" aria-label="Search" value="<?php echo htmlspecialchars($search); ?>">
-                    <button class="btn btn-search" type="submit">搜尋</button>
-                </form>
+    <!-- Header Section -->
+    <header>
+        <h2 class="logo">
+            <a href="#" style="text-decoration: none; color: #ffffffe0;">
+                <img src="logo.webp" width="70" style="border-radius: 200px;">
+                <strong>Bable</strong>
+            </a>
+        </h2>
+
+        <nav class="navigation">
+            <a href="index.php"><strong><ion-icon name="home-outline"></ion-icon>首頁</strong></a>
+            <a href="#"><strong><ion-icon name="information-circle-outline"></ion-icon>關於</strong></a>
+            <div class="dropdownb">
+                <a href="#"><strong><ion-icon name="compass-outline"></ion-icon>頁面</strong></a>
+                <div class="dropdownb-content">
+                    <a href="message.php">複製文</a>
+                    <a href="image.php">可愛捏</a>
+                    <a href="#">這我</a>
+                    <a href="#">三小啦</a>
+                </div>
             </div>
-        </div>
-    </nav>
+            <a href="#"><strong><ion-icon name="bulb-outline"></ion-icon>聯絡我們</strong></a>
+            <?php if (isset($_SESSION["username"])): ?>
+                <div class="user-dropdown">
+                    <a href="#" class="dropbtn">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <span><?= htmlspecialchars($_SESSION["username"]) ?></span>
+                    </a>
+                    <div class="user-dropdown-content">
+                        <a href="#">設定</a>
+                        <a href="logout.php">登出</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <button class="btnLogin-popup"><strong>登入</strong></button>
+            <?php endif; ?>
+        </nav>
+    </header>
+
 
     <div class="container mt-5">
         <h1 class="text-center mb-4 animate__animated animate__fadeInDown">訊息展示</h1>
 
-
         <!-- 顯示篩選結果筆數 -->
-        <p>篩選結果：<?php echo $resultCount; ?> 筆資料</p>
-
-        <!-- 標籤篩選區域 -->
-        <div class="mb-4" id="messages">
-            <h5>篩選標籤：</h5>
-            <?php
-            foreach ($allTags as $tag) {
-                echo "<a href='?tag=" . urlencode($tag) . "' class='tag'>$tag</a>";
-            }
-            ?>
-        </div>
+        <p style="color: white;">篩選結果：<?php echo $totalItems; ?> 筆資料</p>
 
         <div class="row" data-masonry='{ "percentPosition": true }'>
         <?php
@@ -222,16 +239,6 @@ $conn->close();
                 echo "<p class='card-text full-content' style='display:none;'>" . $content . "</p>";
                 echo "<p class='card-text'><small class='text-muted'>時間: " . htmlspecialchars($row["message_time"]) . "</small></p>";
 
-                // 顯示標籤
-                if (!empty($row['tags'])) {
-                    $tags = explode(',', $row['tags']);
-                    echo "<p class='card-text'>";
-                    foreach ($tags as $tag) {
-                        echo "<span class='badge bg-secondary me-1'>$tag</span>";
-                    }
-                    echo "</p>";
-                }
-
                 // 顯示閱讀更多按鈕僅在長內容的情況下
                 if ($isLongContent) {
                     echo "<p class='toggle-button'>閱讀更多</p>";
@@ -249,6 +256,19 @@ $conn->close();
         }
         ?>
         </div>
+
+        <!-- 分頁導航 -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?><?php echo $search ? '&search=' . urlencode($search) : ''; ?><?php echo $filterTag ? '&tag=' . urlencode($filterTag) : ''; ?><?php echo $startDate ? '&start_date=' . urlencode($startDate) : ''; ?><?php echo $endDate ? '&end_date=' . urlencode($endDate) : ''; ?>">
+                            <?php echo $i; ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
     </div>
 
     <!-- 引入 Bootstrap 和 JS -->
@@ -256,7 +276,7 @@ $conn->close();
     
     <!-- AOS 效果的引入 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    
+    <script src="script.js"></script>
     <!-- 啟動 AOS 效果 -->
     <script>
         AOS.init({
@@ -324,5 +344,9 @@ $conn->close();
             navbar.classList.toggle('scrolled', window.scrollY > 50);
         });
     </script>
-</body>   
+
+    <!-- 在 </body> 標籤之前添加以下腳本 -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
 </html>

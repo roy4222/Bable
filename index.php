@@ -188,8 +188,8 @@ mysqli_close($conn); // 關閉連接
         </h2>
 
         <nav class="navigation">
-            <a href="#"><strong><ion-icon name="home-outline"></ion-icon>首頁</strong></a>
-            <a href="#"><strong><ion-icon name="information-circle-outline"></ion-icon>關於</strong></a>
+            <a href="#"><strong><ion-icon name="home-outline" ></ion-icon>首頁</strong></a>
+            <a href="#"><strong><ion-icon name="information-circle-outline" ></ion-icon>關於</strong></a>
             <div class="dropdownb">
                 <a href="#"><strong><ion-icon name="compass-outline"></ion-icon>頁面</strong></a>
                 <div class="dropdownb-content">
