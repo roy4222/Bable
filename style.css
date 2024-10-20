@@ -816,3 +816,46 @@ header.scrolled {
 .user-dropdown-content a:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+.card-body .btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.toggle-button, .copy-button {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.toggle-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.copy-button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.toggle-button:hover, .copy-button:hover {
+    opacity: 0.8;
+}
+
+/* 添加以下樣式到文件末尾 */
+
+.tags-container {
+    margin-bottom: 10px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 2px 8px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 12px;
+    font-size: 0.8em;
+}

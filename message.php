@@ -217,11 +217,24 @@ $conn->close();
                 echo "<p class='card-text full-content' style='display:none;'>" . $content . "</p>";
                 echo "<p class='card-text'><small class='text-muted'>時間: " . htmlspecialchars($row["message_time"]) . "</small></p>";
 
-                if ($isLongContent) {
-                    echo "<p class='toggle-button'>閱讀更多</p>";
+                // 添加標籤顯示
+                $tags = explode(',', $row["tags"]);
+                echo "<div class='tags-container'>";
+                foreach ($tags as $tag) {
+                    $tag = trim($tag);
+                    if (!empty($tag)) {
+                        echo "<span class='tag'>" . htmlspecialchars($tag) . "</span>";
+                    }
                 }
+                echo "</div>";
 
-                echo "<p class='copy-button' data-content='" . htmlspecialchars($row["content"]) . "'>複製</p>";
+                if ($isLongContent) {
+                    echo "<button class='btn btn-primary toggle-button'>閱讀更多</button>";
+                }
+                echo "<br>";
+                echo "<br>";
+
+                echo "<button class='btn btn-success copy-button' data-content='" . htmlspecialchars($row["content"]) . "'>複製</button>";
                 echo "</div>";
                 echo "</div>";
                 echo "</div>";
@@ -323,11 +336,11 @@ $conn->close();
                 // Collapsible content script
                 const toggleButtons = document.querySelectorAll('.toggle-button');
                 toggleButtons.forEach(button => {
-                    const cardBody = button.closest('.card-body');
-                    const shortContent = cardBody.querySelector('.collapsible-content');
-                    const fullContent = cardBody.querySelector('.full-content');
-
                     button.addEventListener('click', () => {
+                        const cardBody = button.closest('.card-body');
+                        const shortContent = cardBody.querySelector('.collapsible-content');
+                        const fullContent = cardBody.querySelector('.full-content');
+
                         shortContent.style.display = shortContent.style.display === 'none' ? 'block' : 'none';
                         fullContent.style.display = fullContent.style.display === 'none' ? 'block' : 'none';
 
@@ -338,11 +351,53 @@ $conn->close();
                         });
                     });
                 });
+
+                // 複製功能
+                const copyButtons = document.querySelectorAll('.copy-button');
+                copyButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const content = this.getAttribute('data-content');
+                        navigator.clipboard.writeText(content).then(() => {
+                            const originalText = this.textContent;
+                            this.textContent = '已複製！';
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                            }, 2000);
+                        }).catch(err => {
+                            console.error('複製失敗：', err);
+                            alert('複製失敗，請手動複製。');
+                        });
+                    });
+                });
             });
         });
     </script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 現有的 Masonry、collapsible content 和複製功能代碼保持不變
+
+            // 添加清除按鈕功能
+            const clearButton = document.getElementById('clearButton');
+            const searchForm = document.getElementById('searchForm');
+
+            clearButton.addEventListener('click', function() {
+                // 清除搜索輸入框
+                searchForm.querySelector('input[name="search"]').value = '';
+                
+                // 重置標籤選擇
+                searchForm.querySelector('select[name="tag"]').selectedIndex = 0;
+                
+                // 重置排序方式
+                searchForm.querySelector('select[name="sort"]').selectedIndex = 0;
+                
+                // 提交表單以刷新頁面
+                searchForm.submit();
+            });
+        });
+    </script>
 
 </body>
 </html>
